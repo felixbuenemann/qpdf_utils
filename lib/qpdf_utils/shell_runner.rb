@@ -13,7 +13,8 @@ module QPDFUtils
     end
 
     def run_with_output(args)
-      output, errors, status = Open3.capture3(@binary, *args)
+      cmd = [@binary, *args]
+      output, errors, status = Open3.capture3(*cmd)
       unless status.exitstatus == 0 || status.exitstatus == 3 # warning
         raise CommandFailed, "command #{cmd} failed with output: #{errors.inspect}", caller
       end
