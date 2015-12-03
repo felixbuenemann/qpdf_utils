@@ -1,5 +1,5 @@
 # encoding: utf-8
-require 'shellwords'
+require 'open3'
 
 module QPDFUtils
   class ShellRunner
@@ -13,18 +13,11 @@ module QPDFUtils
     end
 
     def run_with_output(args)
-      cmd = build_command(args)
-      output = `#{cmd}`
-      if $?.exitstatus > 0
-        raise CommandFailed, "command #{cmd} failed with output: #{output}", caller
+      output, errors, status = Open3.capture3(@binary, *args)
+      unless status.exitstatus == 0 || status.exitstatus == 3 # warning
+        raise CommandFailed, "command #{cmd} failed with output: #{errors.inspect}", caller
       end
-      output
-    end
-
-    private
-
-    def build_command(args)
-      cmd = "#{@binary.shellescape} #{args.shelljoin} 2>&1"
+      output.chomp
     end
   end
 end
