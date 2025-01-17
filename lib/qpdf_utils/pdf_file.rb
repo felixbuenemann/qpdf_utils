@@ -95,7 +95,7 @@ module QPDFUtils
     end
 
     def validate(pdf_file)
-      raise Errno::ENOENT unless File.exists? pdf_file
+      raise Errno::ENOENT unless File.exist? pdf_file
       unless QPDFUtils.is_pdf? pdf_file
         raise BadFileType, "#{pdf_file} does not appear to be a PDF", caller
       end
